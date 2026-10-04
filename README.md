@@ -4,7 +4,7 @@
 
 <p align="center">A private side for your wallet on Robinhood Chain. Everything private answers 402 until you hold.</p>
 
-<p align="center"><a href="https://tate402.vercel.app">tate402.vercel.app</a></p>
+<p align="center"><a href="https://tate402.xyz">tate402.xyz</a></p>
 
 <p align="center"><a href="https://github.com/TateAI402/402/actions/workflows/ci.yml"><img src="https://github.com/TateAI402/402/actions/workflows/ci.yml/badge.svg" alt="Checks"></a></p>
 
