@@ -71,7 +71,7 @@ export default function DockWallet() {
           {h.image ? <img src={h.image} alt="" width="20" height="20" referrerPolicy="no-referrer" /> : <em>{h.symbol.slice(0, 1)}</em>}
           <b>{h.symbol}</b><span>{amt(h.amount)}</span><small>{usd(h.usd)}</small></Link></li>)}
         {bal.state === 'ready' && !bal.holdings?.length && <li className="dw-empty">No Robinhood Chain coins from the board in this wallet</li>}
-        <li className="dw-own"><b>{IDENTITY.ticker}</b><span>{IDENTITY.contract ? '' : 'Contract TBA'}</span></li>
+        <li className="dw-own"><b>{IDENTITY.ticker}</b><span>{IDENTITY.contract ? short(IDENTITY.contract) : 'Contract TBA'}</span></li>
       </ul>
       <div className="dw-actions">
         <button type="button" onClick={copy}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? 'Copied' : short(wallet.account)}</button>

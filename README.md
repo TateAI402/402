@@ -14,7 +14,7 @@ Tate402 is a web app for Robinhood Chain. A public wallet shows every transfer, 
 
 The name is the HTTP status code 402 Payment Required, reserved in 1997 and never finished. Tate402 uses it as its door. Once `$TATE402` and its holder bar exist, the private tools answer `402` to wallets below the bar and open above it. Until then they are open to every wallet, with limits.
 
-**$TATE402 contract:** not published yet. The address will appear on the home page, the docs and this README at the same moment. Anything trading as Tate402 before that is not this project.
+**Contract:** [`0xbdb7e537df5f5e36c7560ddd35513cc907299f3a`](https://robinhoodchain.blockscout.com/token/0xbdb7e537df5f5e36c7560ddd35513cc907299f3a) on Robinhood Chain, launched on the Pons curve paired with ETH. The same address is on the home page, the header menu and the docs. Anything else trading under the name is not this project.
 
 ## Pages
 
