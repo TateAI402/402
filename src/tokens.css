@@ -1,0 +1,69 @@
+/* Tate402 tokens. Black and white only, sampled from the supplied logo: white letters glowing out of black, a soft
+   blur at every edge and a fine grain. White is the only accent; emphasis comes from tone and size, never colour. */
+:root {
+  --ground: #030303;
+  --ground-2: #0a0a0a;
+  --panel: #0f0f0f;
+  --panel-2: #161616;
+  --white: #ffffff;
+  --paper: #f2f2f0;
+  --text: #f2f2f0;
+  --text-2: #c9c9c6;
+  --mist: #9a9a97;
+  --dim: #64645f;
+  --ink: #030303;
+  --ink-text: #111110;
+  --line: #ffffff1c;
+  --line-2: #ffffff2e;
+  --line-ink: #0303031f;
+  --glow: 0 0 24px #ffffff40, 0 0 64px #ffffff14;
+  --up: #f2f2f0;
+  --down: #8c8c88;
+  --warn: #e8e8e4;
+
+  --serif: 'Instrument Serif', 'Times New Roman', serif;
+  --mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'Cascadia Mono', monospace;
+  --fs-display: clamp(72px, 11vw, 176px);
+  --fs-1: clamp(40px, 4.6vw, 72px);
+  --fs-2: clamp(28px, 2.6vw, 40px);
+  --fs-3: 22px;
+  --fs-lead: 15px;
+  --fs-body: 14px;
+  --fs-small: 13px;
+  --fs-label: 11px;
+
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
+  --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px; --s10: 128px;
+  --gutter: clamp(16px, 3.2vw, 48px);
+  --max: 1440px;
+
+  --r-sm: 3px;
+  --r: 6px;
+  --bw: 1px;
+
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --ease-ui: cubic-bezier(.4, 0, .2, 1);
+  --fast: 140ms;
+  --slow: 900ms;
+
+  /* names the inherited tool pages use, mapped onto black and white */
+  --sans: var(--mono);
+  --sky: var(--ground);
+  --sky-pale: #ffffff0a;
+  --haze: #ffffff06;
+  --ink-2: #111111;
+  --ink-line: var(--line);
+  --ember: #ffffff;
+  --ember-hi: #ffffff;
+  --ember-deep: #8c8c88;
+  --slit: linear-gradient(90deg, transparent, #ffffff 30%, #ffffff 70%, transparent);
+  --up-on-ink: var(--up);
+  --down-on-ink: var(--down);
+  --press: none; --press-hover: none; --press-down: none;
+
+  --z-chapter: 2;
+  --z-dock: 40;
+  --z-grain: 60;
+  --z-dialog: 100;
+  --dock-h: 64px;
+}

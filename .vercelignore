@@ -1,0 +1,11 @@
+node_modules
+artifacts
+.git
+tests
+scripts
+AGENTS.md
+DESIGN.md
+PROGRESS.md
+marketing
+docs
+.github
