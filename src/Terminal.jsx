@@ -6,7 +6,7 @@ import { SWAP_ROUTER02, UNIVERSAL_ROUTER, encodeCurveBuy, encodeV3Buy, encodeV4B
 import { EXPLORER, useTerminalWallet, walletError } from './terminal-wallet';
 import { WordmarkSvg } from './Wordmark';
 import DockWallet from './DockWallet';
-import GithubMark from './GithubMark';
+import { GitKey } from './GithubMark';
 import { IDENTITY } from './identity';
 import './terminal.css';
 
@@ -179,7 +179,7 @@ export default function Terminal() {
       <label className="t-find"><Search size={16} /><input ref={find} placeholder="Search name or paste a contract" value={q} onChange={e => setQ(e.target.value)} aria-label="Search coins" spellCheck={false} /><kbd>/</kbd></label>
       <span className="t-chain"><i />Robinhood Chain</span>
       {eth && <span className="t-eth">ETH <b>{price(eth.priceUsd)}</b></span>}
-      <a className="t-git" href={IDENTITY.repo} target="_blank" rel="noreferrer" aria-label="Source on GitHub" title="Source on GitHub"><GithubMark size={17} /></a>
+      {IDENTITY.repo && <GitKey href={IDENTITY.repo} />}
       <DockWallet />
     </header>
     <div className="t-toolbar">

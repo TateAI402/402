@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { GATED, IDENTITY } from './identity';
 import DockWallet from './DockWallet';
+import { GitKey } from './GithubMark';
 
 const ROUTES = [['/terminal', 'Terminal'], ['/privacy', 'Workspace'], ['/vault', 'Vault'], ['/agent', 'Agent'], ['/docs', 'Docs']];
 
@@ -45,6 +46,7 @@ export default function Header() {
         <Link to="/docs#fees" className={'gate-chip' + (GATED ? ' closed' : '')} title={GATED ? 'The private tools answer 402 below the holder bar' : 'Open to signed-in wallets until the token and its holder bar exist'}>
           <i />{GATED ? '402 gate' : '200 open'}
         </Link>
+        {IDENTITY.repo && <GitKey href={IDENTITY.repo} />}
         <DockWallet />
         <button className="menu-toggle" aria-label={menu ? 'Close menu' : 'Open menu'} aria-expanded={menu} onClick={() => setMenu(!menu)}>{menu ? <X size={20} /> : <Menu size={20} />}</button>
       </div>
@@ -53,6 +55,7 @@ export default function Header() {
     {menu && <div className="menu-sheet" role="dialog" aria-label="Menu">
       <nav>{[['/', 'Home'], ...ROUTES].map(([to, label], i) => <NavLink key={to} to={to} end={to === '/'} style={{ '--i': i }}>{label}<ArrowUpRight size={22} /></NavLink>)}</nav>
       <p><b>{IDENTITY.ticker}</b> {IDENTITY.contract ? IDENTITY.contract : 'contract TBA'}</p>
+      {IDENTITY.repo && <GitKey href={IDENTITY.repo} wide label="Source on GitHub" />}
     </div>}
   </>;
 }
