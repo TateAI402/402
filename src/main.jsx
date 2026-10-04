@@ -1,0 +1,67 @@
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Link, NavLink, Routes, Route, useLocation } from 'react-router-dom';
+import { ArrowUpRight, Menu, X, Wallet, CircleAlert, ExternalLink } from 'lucide-react';
+import Home from './Home';
+import Vault from './Vault';
+import { PRIVACY } from './privacy-config';
+import { GATED, HOLDER_MIN_USD, IDENTITY } from './identity';
+import { WordmarkSvg } from './Wordmark';
+import Header from './Header';
+import GithubMark from './GithubMark';
+import ContractTag from './ContractTag';
+import HolderGate from './HolderGate';
+import { QUOTER_V2, SWAP_ROUTER02, UNIVERSAL_ROUTER, V4_QUOTER } from './terminal-addresses';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/geist-mono';
+import './tokens.css';
+import './style.css';
+import './home.css';
+import './header.css';
+import './privacy.css';
+const Privacy = lazy(() => import('./Privacy'));
+const Terminal = lazy(() => import('./Terminal'));
+const Agent = lazy(() => import('./Agent'));
+const Kit = lazy(() => import('./Kit'));
+const Arrow = () => <ArrowUpRight size={17} />;
+
+function Docs() {
+  return <main className="docs page"><div className="page-heading"><h1>Understand your private side</h1><p>What happens locally, what goes onchain, and what remains visible</p></div><div className="docs-layout"><aside><a href="#fees">The 402 gate</a><a href="#terminal">Terminal</a><a href="#privacy">Privacy pools</a><a href="#agent">Agent</a><a href="#recovery">Keys & recovery</a><a href="#vault">File vault</a><a href="#contracts">Contracts & sources</a>{IDENTITY.repo && <a href="#source">Source code</a>}<a href="#verification">Verification</a></aside><article><section id="fees"><h2>The 402 gate and fees</h2><p>HTTP 402 is Payment Required, a status code reserved in 1997 and left unfinished. Tate402 uses it as its door. {GATED ? `The private tools answer 402 to wallets holding less than $${HOLDER_MIN_USD} of ${IDENTITY.ticker}, and open for wallets above it.` : `Once ${IDENTITY.ticker} and its holder bar exist, the private tools answer 402 to wallets below the bar. Until then they are open to any signed-in wallet, with limits.`} The terminal, the docs and the vault stay open to everyone.</p><div className="contract-line"><b>{IDENTITY.ticker}</b>{IDENTITY.contract ? <a href={'https://robinhoodchain.blockscout.com/token/'+IDENTITY.contract} target="_blank" rel="noreferrer">{IDENTITY.contract}<ExternalLink size={14}/></a> : <span>Contract TBA</span>}</div><div className="notice"><CircleAlert size={20}/><p>The token, the holder bar, the fees and their split are TBA. Until the contract is posted here, any token trading as Tate402 is not this project.</p></div></section><section id="terminal"><h2>Terminal</h2><p>The terminal lists Robinhood Chain coins from public pool feeds and buys them with ETH from your own wallet. Each coin is routed by its contract address, never by its symbol, because several contracts share the names of real coins and stocks.</p><p>Routes are Uniswap V3 through SwapRouter02 against WETH or through USDG, Uniswap V4 through the Universal Router against native ETH or through USDG, and Pons V2 bonding curves. Uniswap V4 pool keys are read from the PoolManager's opening record and must hash to the pool id. The server builds the call, your browser builds it again and compares it byte for byte, and the exact call is dry-run from your account before the wallet opens. Tate402 adds no fee and holds nothing.</p><div className="notice"><CircleAlert size={20}/><p>Prices move between the quote and the block. The slippage you choose sets the least you accept. Majors are shown for reference and are not routed. Tokenized stocks follow their issuers' terms. Thin pools are left off the board, and a contract you paste opens even when it is not listed, so check the address you buy.</p></div>{[['SwapRouter02', SWAP_ROUTER02], ['Universal Router', UNIVERSAL_ROUTER], ['QuoterV2', QUOTER_V2], ['V4 Quoter', V4_QUOTER]].map(([label, address]) => <div className="contract-line" key={label}><b>{label}</b><a href={'https://robinhoodchain.blockscout.com/address/'+address} target="_blank" rel="noreferrer">{address}<ExternalLink size={14}/></a></div>)}</section><section id="privacy"><h2>Privacy pools</h2><p>{GATED ? `The workspace opens for wallets holding at least $${HOLDER_MIN_USD} of ${IDENTITY.ticker}; below that it answers 402. Connecting reads the balance on Robinhood Chain; nothing is signed for the check.` : `The workspace is open to every wallet until ${IDENTITY.ticker} and its holder bar exist.`}</p><p>Tate402 is an independent interface to Privacy Cash EVM 1.3.3 on Robinhood Chain. The browser builds proofs with the original pinned circuit artifacts. ETH and USDG are the supported assets in this interface.</p><p>Connect, unlock, prepare and review are separate actions. Deposits request a wallet transaction. USDG may first require an exact-amount approval. Withdrawals require explicit confirmation before a proof is sent to the external relay and may move funds without another wallet prompt.</p><div className="notice"><CircleAlert size={20}/><p>Privacy is not anonymity. Public transactions, timing, amounts and provider metadata can reveal associations. Contracts and external services can fail or change. There is no private x402 merchant settlement in this project.</p></div></section><section id="agent"><h2>Agent</h2><p>The agent answers questions about Robinhood Chain coins and plans private transfers by reading Tate402's own tools: the terminal board, a token's pools and route, a buy quote, the signed-in wallet, the private pools and a check of a planned withdrawal. Answers come from a hosted language model called from Tate402's server: your questions and the readings are sent to the model provider to be answered, and Tate402 does not store the conversation.</p><p>{GATED ? `It opens for wallets holding $${HOLDER_MIN_USD} of ${IDENTITY.ticker}.` : 'It opens for any signed-in wallet, with a daily limit, until the holder bar exists.'} The wallet signs one plain message that starts with <code>Tate402 agent sign in</code>; it is not a transaction and cannot move funds, and the session lasts six hours in that tab. Questions are limited per wallet.</p><div className="notice"><CircleAlert size={20}/><p>The agent cannot sign, send or approve anything. A quote opens the terminal with the amount filled in, where the usual review, dry run and wallet prompt apply. Withdrawal checks are rules of thumb from public patterns, not a guarantee of privacy. It can be wrong; numbers come from the readings shown with each answer.</p></div></section><section id="recovery"><h2>Keys & recovery</h2><p>The fixed message is <code>Privacy Money account sign in</code>. The protocol derives keys from the signature. First unlock signs it twice to check consistency. Keep using the same wallet and signing method. Hardware wallets are not supported by this SDK.</p><p>The signature remains in memory and is cleared on lock, account/network changes or leaving the workspace. A project-specific fingerprint is saved locally to detect changes. Encrypted SDK notes may persist in IndexedDB. Clearing browser storage does not revoke signatures or make previously exposed data secret.</p></section><section id="vault"><h2>Local file vault</h2><p>Files up to 20 MB are processed in your browser with AES-256-GCM, a random 96-bit nonce and 128-bit salt. PBKDF2-SHA256 derives the key with 600,000 iterations. A new salt and nonce are generated for each file. Encrypted output uses the versioned Tate402 file format.</p><p>File names and contents are encrypted. The downloaded encrypted file size remains observable. The passphrase never leaves the browser and cannot be recovered by Tate402. Use a long unique passphrase, keep it separate from the file, and test decryption before deleting the original.</p><p>No file content or password is stored in localStorage. Downloaded files remain on your device. This tool does not protect against a compromised browser, malicious extensions or screen capture.</p></section><section id="contracts"><h2>Contracts & sources</h2><p>These are external protocol contracts, not a Tate402 token or treasury.</p>{[['ETH pool', PRIVACY.ethPool], ['USDG pool', PRIVACY.usdgPool], ['USDG token', PRIVACY.usdgToken]].map(([label, address]) => <div className="contract-line" key={label}><b>{label}</b><a href={'https://robin.etherscan.io/address/'+address} target="_blank" rel="noreferrer">{address}<ExternalLink size={14}/></a></div>)}<p><a href="https://github.com/Privacy-Cash/privacy-cash-core-evm" target="_blank" rel="noreferrer">Privacy Cash contract source <Arrow /></a></p><p>RPC, indexer and withdrawal relay are operated externally by Privacy Cash. Provider checks validate chain, contract presence and returned limits. They are not an audit of implementation code or a service guarantee.</p></section>{IDENTITY.repo && <section id="source"><h2>Source code</h2><p>The whole interface is public: the pages, the terminal server, the privacy worker, the tests and the checks that run on every change.</p><a className="repo-line" href={IDENTITY.repo} target="_blank" rel="noreferrer"><GithubMark size={22} /><span><b>{IDENTITY.repo.replace('https://github.com/', '')}</b><small>React, Vite, Three.js, viem, pinned Privacy Cash EVM 1.3.3</small></span><ArrowUpRight size={18} /></a></section>}<section id="verification"><h2>Verification & status</h2><p>This interface is unaudited. Amount, approval, recipient and relay payload guards are tested. Browser tests use isolated fixtures for financial actions. No funded deposit or withdrawal is claimed.</p><p>Ticker: {IDENTITY.ticker}. Contract: {IDENTITY.contract || 'TBA'}. No official social account has been supplied. This application is not affiliated with Robinhood or endorsed by the integrated protocols.</p><h3>October 3, 2026</h3><p>Tate402 opens: the private pools, the file vault, the terminal and the agent, in black and white around one field of grain drawn from the logo, with the 402 gate written into the agent and the workspace.</p></section></article></div></main>;
+}
+
+class Boundary extends React.Component {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? <main className="page error-page"><h1>This workspace could not load</h1><p>No automatic transfer has been made</p><button className="button" onClick={() => location.reload()}>Reload page<ArrowUpRight size={20} /></button></main> : this.props.children; }
+}
+// Slow, weighted scrolling everywhere except the terminal (its columns scroll on their own) and reduced motion.
+function useSlowScroll(off) {
+  useEffect(() => {
+    if (off || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const lenis = new Lenis({ lerp: 0.045, wheelMultiplier: 0.75, touchMultiplier: 1.1, smoothWheel: true });
+    window.__lenis = lenis;
+    let raf = 0; const loop = (t) => { lenis.raf(t); raf = requestAnimationFrame(loop); }; raf = requestAnimationFrame(loop);
+    return () => { cancelAnimationFrame(raf); lenis.destroy(); window.__lenis = null; };
+  }, [off]);
+}
+function Shell() {
+  const location = useLocation();
+  const app = location.pathname.startsWith('/terminal');
+  useSlowScroll(app);
+  useEffect(() => { if (!location.hash) { window.__lenis ? window.__lenis.scrollTo(0, { immediate: true }) : scrollTo(0,0); } else requestAnimationFrame(() => document.getElementById(location.hash.slice(1))?.scrollIntoView()); }, [location.pathname, location.hash]);
+  return <>
+    {!app && <Header />}
+    <Boundary key={location.pathname}><Suspense fallback={<main className="page loading" role="status">Opening your workspace</main>}><Routes><Route path="/" element={<Home/>}/><Route path="/kit" element={<Kit/>}/><Route path="/privacy" element={<HolderGate><Privacy/></HolderGate>}/><Route path="/vault" element={<Vault/>}/><Route path="/agent" element={<Agent/>}/><Route path="/terminal" element={<Terminal/>}/><Route path="/terminal/:address" element={<Terminal/>}/><Route path="/docs" element={<Docs/>}/><Route path="*" element={<main className="page"><div className="page-heading"><h1>Page not found</h1></div><Link className="button" to="/">Return to Tate402<ArrowUpRight size={20} /></Link></main>}/></Routes></Suspense></Boundary>
+    {!app && <footer className="foot">
+      <div className="foot-row">
+        <Link to="/" className="foot-mark" aria-label="Tate402 home"><WordmarkSvg /></Link>
+        <nav aria-label="Footer"><Link to="/terminal">Terminal</Link><Link to="/privacy">Privacy workspace</Link><Link to="/agent">Agent</Link><Link to="/docs">Docs & risks</Link>{IDENTITY.repo && <a href={IDENTITY.repo} target="_blank" rel="noreferrer"><GithubMark size={14} />GitHub</a>}</nav>
+        <span className="foot-id"><b>{IDENTITY.ticker}</b>CA <ContractTag /></span>
+      </div>
+    </footer>}
+  </>;
+}
+createRoot(document.getElementById('root')).render(<React.StrictMode><BrowserRouter><Shell/><div className="grain" aria-hidden="true" /></BrowserRouter></React.StrictMode>);

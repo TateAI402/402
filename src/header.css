@@ -1,0 +1,111 @@
+/* Tate402 header (2026-10-04): the grain mark with its 402 chip, the route strip with a sliding white plate, the gate's
+   status, the wallet with its balance sheet. A seam of light runs along the bottom; the bar condenses after scrolling. */
+.dock { height: 80px; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--s5); transition: height 500ms var(--ease), background-color 500ms var(--ease); }
+.dock::before { inset: 0 0 -40px; background: linear-gradient(#030303f2 30%, #03030300); opacity: 1; transition: opacity 500ms var(--ease); }
+.dock.over-stage:not(.scrolled)::before { opacity: .55; }
+.dock.scrolled { height: 64px; }
+.dock.scrolled::before { inset: 0; background: #050505e6; backdrop-filter: blur(14px) saturate(1.1); }
+.dock-seam { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; opacity: 0; transition: opacity 500ms var(--ease); background: linear-gradient(90deg, transparent, #ffffff1f 20%, #ffffff1f 80%, transparent); overflow: hidden; }
+.dock.scrolled .dock-seam { opacity: 1; }
+.dock-seam::after { content: ''; position: absolute; top: 0; bottom: 0; width: 22%; left: -22%; background: linear-gradient(90deg, transparent, #fff, transparent); box-shadow: 0 0 12px #fff; animation: seam 7s var(--ease-ui) infinite; }
+@keyframes seam { 0% { left: -22%; } 60%, 100% { left: 100%; } }
+
+/* the mark: the logo's lettering with grain drifting through it, and its 402 as an inverted chip */
+.brand { gap: 10px; }
+.brand-grain { position: relative; display: block; height: 30px; }
+.brand-grain img { display: block; height: 30px; width: auto; filter: drop-shadow(0 0 10px #ffffff50); }
+.brand-grain::after { content: ''; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply;
+  -webkit-mask: url('/brand/tate-mark-alpha.png') center / contain no-repeat; mask: url('/brand/tate-mark-alpha.png') center / contain no-repeat;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.3' numOctaves='1'/%3E%3C/filter%3E%3Crect width='90' height='90' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: brandgrain .9s steps(5) infinite; opacity: .7; }
+@keyframes brandgrain { 0% { background-position: 0 0; } 25% { background-position: -23px 11px; } 50% { background-position: 17px -29px; } 75% { background-position: -31px -7px; } 100% { background-position: 0 0; } }
+.brand-code { display: grid; place-items: center; height: 20px; padding: 0 6px; border-radius: 3px; background: var(--paper); color: var(--ink-text); font: 700 11px/1 var(--mono); letter-spacing: .04em; box-shadow: 0 0 14px #ffffff40; animation: codepulse 3.2s var(--ease-ui) infinite; }
+@keyframes codepulse { 0%, 100% { box-shadow: 0 0 10px #ffffff30; } 50% { box-shadow: 0 0 22px #ffffff70; } }
+.brand:hover .brand-code { animation-duration: .8s; }
+
+/* the route strip */
+.nav-strip { justify-self: center; position: relative; display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 8px; background: #0a0a0ab8; box-shadow: inset 0 0 0 1px var(--line-2), 0 10px 30px #00000080; backdrop-filter: blur(10px); }
+.nav-plate { position: absolute; left: 0; top: 4px; bottom: 4px; width: 0; border-radius: 5px; background: var(--paper); box-shadow: 0 0 22px #ffffff38; opacity: 0; transition: transform 520ms var(--ease), width 520ms var(--ease), opacity 260ms var(--ease-ui); pointer-events: none; }
+.nav-strip a { position: relative; z-index: 1; display: flex; align-items: center; height: 36px; padding: 0 16px; border-radius: 5px; font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mist); transition: color 300ms var(--ease-ui); }
+.nav-strip a:hover, .nav-strip a.hot { color: var(--ink-text); }
+.nav-strip a.active { color: var(--ink-text); }
+.nav-strip:hover a.active:not(.hot) { color: var(--text); }
+.nav-strip a::after { display: none; }
+
+/* the gate's live status */
+.gate-chip { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 5px; font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--text-2); box-shadow: inset 0 0 0 1px var(--line-2); white-space: nowrap; transition: box-shadow var(--fast) var(--ease-ui), color var(--fast) var(--ease-ui); }
+.gate-chip:hover { color: var(--white); box-shadow: inset 0 0 0 1px #ffffffa0; }
+.gate-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--white); box-shadow: 0 0 8px #fff; animation: gatepulse 1.8s var(--ease-ui) infinite; }
+.gate-chip.closed i { background: transparent; box-shadow: inset 0 0 0 1.5px #fff; }
+@keyframes gatepulse { 50% { opacity: .35; } }
+
+/* the wallet key and its balance sheet */
+.dw { position: relative; }
+.dock-wallet { position: relative; display: inline-flex; align-items: stretch; height: 42px; padding: 0; border-radius: 6px; overflow: hidden; background: var(--paper); color: var(--ink-text); font: 600 12px var(--mono); letter-spacing: .04em; text-transform: none; box-shadow: none; }
+.dock-wallet:hover:not(:disabled) { background: var(--white); box-shadow: 0 0 28px #ffffff40; }
+.dw-label { display: flex; align-items: center; gap: 6px; padding: 0 14px; }
+.dw-cell { display: grid; place-items: center; width: 42px; border-left: 1px solid #0303032e; transition: background-color 300ms var(--ease-ui), color 300ms var(--ease-ui); }
+.dock-wallet:hover .dw-cell { background: var(--ink); color: var(--white); }
+.dock-wallet.on { background: #ffffff08; color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); border-radius: 6px; padding: 0; text-transform: none; letter-spacing: 0; }
+.dock-wallet.on:hover:not(:disabled), .dock-wallet.on[aria-expanded=true] { background: #ffffff10; color: var(--text); box-shadow: inset 0 0 0 1px #ffffffa0; }
+.dock-wallet.on .dw-cell { border-left-color: var(--line-2); }
+.dock-wallet.on:hover .dw-cell { background: var(--paper); color: var(--ink-text); }
+.dock-wallet.on b { font: 600 14px var(--mono); font-variant-numeric: tabular-nums; }
+.dock-wallet.on small { color: var(--mist); font-size: 11px; }
+.dock-wallet.on i { margin-left: 6px; padding-left: 10px; border-left: 1px solid var(--line-2); font-style: normal; color: var(--mist); font-size: 12px; }
+.dock-wallet.on[aria-expanded=true] .dw-cell svg { transform: rotate(180deg); }
+.dw-cell svg { transition: transform 300ms var(--ease); }
+.dw-sheet { position: absolute; right: 0; top: calc(100% + 10px); z-index: 5; width: 360px; padding: var(--s4); border-radius: 8px; background: #0b0b0b; box-shadow: inset 0 0 0 1px var(--line-2), 0 40px 90px #000000e6, 0 0 40px #ffffff0a; backdrop-filter: blur(16px); animation: sheetin 420ms var(--ease) both; }
+@keyframes sheetin { from { opacity: 0; transform: translateY(-8px) scale(.98); filter: blur(4px); } }
+.dw-top { display: flex; align-items: center; justify-content: space-between; }
+.dw-net { display: inline-flex; align-items: center; gap: 8px; font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--mist); }
+.dw-net i { width: 7px; height: 7px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--mist); }
+.dw-net.ok i { background: var(--white); box-shadow: 0 0 8px #fff; }
+.dw-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 4px; color: var(--mist); transition: background-color var(--fast) var(--ease-ui), color var(--fast) var(--ease-ui); }
+.dw-icon:hover { background: #ffffff10; color: var(--white); }
+.dw-icon[data-spin] svg { animation: busy 1s linear infinite; }
+.dw-switch { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 40px; margin-top: var(--s3); padding: 0 var(--s3); border-radius: 5px; background: var(--paper); color: var(--ink-text); font: 600 12px var(--mono); }
+.dw-total { display: grid; gap: 4px; margin: var(--s4) 0 var(--s3); }
+.dw-total span { font: 500 10px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--mist); }
+.dw-total b { font: 400 40px/1 var(--serif); font-variant-numeric: tabular-nums; text-shadow: 0 0 20px #ffffff30; }
+.dw-list { max-height: 260px; overflow-y: auto; border-top: 1px solid var(--line); scrollbar-width: thin; }
+.dw-list li, .dw-list li > a { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto 76px; align-items: center; gap: var(--s3); min-height: 42px; font: 500 13px var(--mono); }
+.dw-list li { border-bottom: 1px solid var(--line); }
+.dw-list li > a { margin: 0 calc(var(--s2) * -1); padding: 0 var(--s2); border-radius: 4px; transition: background-color var(--fast) var(--ease-ui); }
+.dw-list li > a:hover { background: #ffffff0a; }
+.dw-list li:has(> a) { display: block; }
+.dw-list img, .dw-list em { width: 20px; height: 20px; border-radius: 50%; filter: grayscale(1); }
+.dw-list em { display: grid; place-items: center; font: 600 10px var(--mono); font-style: normal; background: #ffffff1a; }
+.dw-list span { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-2); }
+.dw-list small { text-align: right; font-size: 12px; color: var(--mist); font-variant-numeric: tabular-nums; }
+.dw-list .dw-empty { display: block; padding: var(--s3) 0; font-size: 12px; color: var(--mist); }
+.dw-list .dw-own { grid-template-columns: auto 1fr; color: var(--mist); }
+.dw-list .dw-own b { color: var(--text); }
+.dw-actions { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 6px; margin-top: var(--s4); }
+.dw-actions > * { display: flex; align-items: center; justify-content: center; gap: 6px; height: 36px; border-radius: 5px; font: 500 11px var(--mono); color: var(--text-2); box-shadow: inset 0 0 0 1px var(--line-2); transition: background-color var(--fast) var(--ease-ui), color var(--fast) var(--ease-ui); }
+.dw-actions > *:hover { background: #ffffff10; color: var(--white); }
+.dw-note { margin-top: var(--s3); font: 400 11px var(--mono); color: var(--dim); }
+
+/* phones: the strip folds into a full-screen sheet with big serif routes */
+.menu-sheet { position: fixed; inset: 0; z-index: calc(var(--z-dock) - 1); display: grid; align-content: center; gap: var(--s6); padding: 96px var(--gutter) var(--s7); background: #030303f7; backdrop-filter: blur(10px); animation: sheetin 420ms var(--ease) both; }
+.menu-sheet nav { display: grid; }
+.menu-sheet nav a { display: flex; align-items: center; justify-content: space-between; height: 72px; border-bottom: 1px solid var(--line); font: 400 44px/1 var(--serif); letter-spacing: -.02em; color: var(--text-2); opacity: 0; transform: translateY(16px); animation: menuin 600ms var(--ease) forwards; animation-delay: calc(var(--i) * 60ms + 80ms); }
+.menu-sheet nav a.active { color: var(--white); text-shadow: var(--glow); }
+.menu-sheet nav a svg { color: var(--mist); }
+@keyframes menuin { to { opacity: 1; transform: none; } }
+.menu-sheet p { font: 500 12px var(--mono); color: var(--mist); }
+.menu-sheet p b { color: var(--text); }
+
+@media (max-width: 1240px) { .nav-strip a { padding: 0 11px; } .gate-chip { display: none; } }
+@media (max-width: 960px) {
+  .dock { grid-template-columns: auto 1fr auto; }
+  .nav-strip { display: none; }
+  .menu-toggle { display: inline-flex; }
+  .dock-end { grid-column: 3; gap: var(--s2); }
+}
+@media (max-width: 560px) {
+  .dock-wallet.on i { display: none; }
+  .dw-label { padding: 0 10px; }
+  .dw-sheet { position: fixed; left: var(--gutter); right: var(--gutter); top: 70px; width: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .brand-grain::after, .brand-code, .dock-seam::after, .gate-chip i { animation: none; } }
